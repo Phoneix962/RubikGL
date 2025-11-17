@@ -13,9 +13,9 @@ Made to learn more about computer graphics programming using C++ and OpenGL.
 - **Camera Controls**: Rotate and zoom the camera to view the cube from different perspectives.
 - **User Interface**: Integrated with ImGui for an intuitive user interface.
 
-## Demo
+## Showcase Video
 
-A demo of RubikGL can be found on YouTube: [Demo Video](https://youtu.be/PY_HNv854KQ)
+[![Demo video](https://img.youtube.com/vi/PY_HNv854KQ/0.jpg)](https://www.youtube.com/watch?v=PY_HNv854KQ)
 
 ## Prerequisites
 
