@@ -156,14 +156,20 @@ void Cube::update_face_rotation(GLfloat deltaTime) {
 			piece->update_rotation(rotVec);
 		}
 
-		if (rotParams.empty())
-			scrambling = false;
+		// 1. Handle Scramble Sequence (Priority 1)
+		if (rotParams.empty()) scrambling = false;
 
 		if (scrambling)
 		{
 			rotate_face(rotParams[0].faceIndex, rotParams[0].contrary, rotParams[0].dir);
 			rotParams.erase(rotParams.begin());
-			
+		}
+		// 2. Handle Manual Input Queue (Priority 2)
+		else if (!moveQueue.empty())
+		{
+			RotationParams next = moveQueue.front();
+			moveQueue.pop();
+			rotate_face(next.faceIndex, next.contrary, next.dir);
 		}
 
 		return;
@@ -210,6 +216,80 @@ void Cube::scramble()
 	}
 
 	rotate_face(rotParams[0].faceIndex, rotParams[0].contrary, rotParams[0].dir);
+}
+
+std::vector<std::string> splitBySpace(const std::string& text) {
+	std::stringstream ss(text);
+	std::string word;
+	std::vector<std::string> words;
+
+	while (std::getline(ss, word, ' ')) { // Splits by comma
+		words.push_back(word);
+	}
+
+	return words;
+}
+
+void Cube::algInput(std::string alg)
+{
+	std::vector<std::string> moves = splitBySpace(alg);
+
+	for (const std::string& move : moves)
+	{
+		if (move.empty()) continue;
+
+		bool isInverse = false;
+		int repetitions = 1;
+		std::string baseMove = move;
+
+		// 1. Detect ' (Inverse)
+		if (baseMove.back() == '\'') {
+			isInverse = true;
+			baseMove.pop_back();
+		}
+		// 2. Detect 2 (Double Move)
+		if (baseMove.back() == '2') {
+			repetitions = 2;
+			baseMove.pop_back();
+		}
+
+		// Determine face parameters
+		int fIndex = 0;
+		RotateDirection direction;
+
+		// Map letters to your specific Enums/Indices
+		if (baseMove == "L") { fIndex = 0; direction = col; }
+		else if (baseMove == "R") { fIndex = 2; direction = col; }
+		else if (baseMove == "U") { fIndex = 2; direction = line; }
+		else if (baseMove == "D") { fIndex = 0; direction = line; }
+		else if (baseMove == "F") { fIndex = 0; direction = face; }
+		else if (baseMove == "B") { fIndex = 2; direction = face; }
+		else { continue; } // Skip invalid characters
+
+		// 3. Push to Queue (1 or 2 times)
+		for (int i = 0; i < repetitions; i++)
+		{
+			RotationParams r;
+			r.faceIndex = fIndex;
+			r.dir = direction;
+
+			// Note: L, D, F usually need !inverse relative to R, U, B in standard implementations.
+			// I kept your original logic here:
+			if (baseMove == "L" || baseMove == "D" || baseMove == "F")
+				r.contrary = !isInverse;
+			else
+				r.contrary = isInverse;
+
+			this->moveQueue.push(r);
+		}
+	}
+
+	// If we aren't currently animating, start the first move immediately!
+	if (!rotating && !moveQueue.empty()) {
+		RotationParams next = moveQueue.front();
+		moveQueue.pop();
+		rotate_face(next.faceIndex, next.contrary, next.dir);
+	}
 }
 
 glm::vec3 roundToNearestHalf(glm::vec3 vec) {
