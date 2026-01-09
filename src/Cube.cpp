@@ -262,8 +262,8 @@ void Cube::algInput(std::string alg)
 		else if (baseMove == "R") { fIndex = 2; direction = col; }
 		else if (baseMove == "U") { fIndex = 2; direction = line; }
 		else if (baseMove == "D") { fIndex = 0; direction = line; }
-		else if (baseMove == "F") { fIndex = 0; direction = face; }
-		else if (baseMove == "B") { fIndex = 2; direction = face; }
+		else if (baseMove == "F") { fIndex = 2; direction = face; }
+		else if (baseMove == "B") { fIndex = 0; direction = face; }
 		else { continue; } // Skip invalid characters
 
 		// 3. Push to Queue (1 or 2 times)
