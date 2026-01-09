@@ -5,6 +5,7 @@
 #include <vector>
 #include <settings.hpp>
 #include <random>
+#include <queue>
 
 #define DEFAULT_SIZE 3
 #define ROTATION_DURATION 0.2f
@@ -31,17 +32,21 @@ public:
 
 	unsigned int size;
 	unsigned int numberOfMoves = 0;
+	std::queue<RotationParams> moveQueue;
 
 	void draw(SETTINGS settings, GLfloat deltaTime);
 	void rotate_face(int faceIndex, bool contrary, RotateDirection dir);
 	void scramble();
+	void algInput(std::string alg);
+
 
 private:
 
 	std::vector<Piece*> pieces;
 	Shader shader;
 	unsigned int texture;
-
+	
+	bool scrambling = false;
 	bool rotating = false;
 	std::vector<Piece*> rotatingFacePieces = {};
 	int rotatingFaceIndex = 0;
@@ -50,7 +55,7 @@ private:
 	float rotationSpeed;
 	RotateDirection rotationDir;
 
-	bool scrambling = false;
+	
 	std::vector<RotationParams> rotParams = {};
 
 	void load_texture();

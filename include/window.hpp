@@ -12,6 +12,8 @@
 
 #include <iostream>
 #include <string>
+//#include <chrono>
+//#include <thread>
 
 #define W_WIDTH 1600
 #define W_HEIGHT 900
@@ -63,17 +65,18 @@ private:
 	float viewRotationSpeed = VIEW_ROTATION_SPEED;
 	std::string viewRotDirection = "";
 	bool keyDown = false;
-	bool shiftDown = false;
+	bool shiftDown = false;	
 
 	std::string lastMove = "";
 
 	void start_view_rotation(std::string direction);
 	void update_view_rotation();
-	void processInput(int key, int scancode, int action, int mods);
+	void processInput(int key, int scancode, int action, int mods);	
 
 	void draw_main_frame(Cube*& _cube);
 	void draw_controls_frame();
 	void draw_cube_infos_frame(Cube*& _cube);
+	void draw_algorithm_frame();
 
 	static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 };
